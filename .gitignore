@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Build output and tool caches
+dist/
+.vite/
+.cache/
+coverage/
+
+# Environment files and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+credentials.json
+secrets.json
+
+# Logs and local debugging artifacts
+*.log
+logs/
+page_dump*.html
+playwright-report/
+test-results/
+
+# Local planning documents
+FUTURE_PLAN.md
+
+# Editor and operating-system files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
