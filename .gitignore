@@ -27,9 +27,6 @@ page_dump*.html
 playwright-report/
 test-results/
 
-# Local planning documents
-FUTURE_PLAN.md
-
 # Editor and operating-system files
 .DS_Store
 Thumbs.db

@@ -23,6 +23,10 @@ It provides a browser interface for submitting a Booking.com URL, reviewing the 
 - The extractor requires a Booking.com URL. Dates, guest count, and currency are not yet part of the request model; these inputs are required for dependable rate collection.
 - The API is available only while the Vite development server is running. `npm run build` produces static frontend files without the extraction API.
 
+See [FUTURE_PLAN.md](./FUTURE_PLAN.md) for the planned work to make room-price extraction accurate and search-context-specific.
+
+On the `future_plan` branch, [FUTURE_TIMELINE.md](./FUTURE_TIMELINE.md) records each plan addition, start, implementation, and completion using `D MMM YYYY` dates.
+
 ## Technology
 
 | Area | Tool |
@@ -199,6 +203,8 @@ A development test on this URL returned the hotel name, five room types, room ph
 ```text
 .
 ├── .gitignore
+├── FUTURE_PLAN.md
+├── FUTURE_TIMELINE.md
 ├── README.md
 ├── index.html
 ├── inspect_scrolled.js
