@@ -14,6 +14,8 @@ timeline
     03 Sep 2026 : Plan Added
                  : FP-2026-09-03-price-extraction
                  : Accurate Booking.com price extraction
+                 : Work Started
+                 : Assigned to Mohammed Kamaluddin (branch price-extraction)
 ```
 
 ---
@@ -23,6 +25,7 @@ timeline
 | Date | Plan ID | Event | Status | Assignee / Developer | Notes |
 | --- | --- | --- | --- | --- | --- |
 | 03 Sep 2026 | [FP-2026-09-03-price-extraction](./FUTURE_PLAN.md#fp-2026-09-03-price-extraction-—-accurate-bookingcom-price-extraction) | Plan Added | 🟡 Planned | Unassigned | Defined scope for search-context-specific Booking.com price extraction. |
+| 03 Sep 2026 | [FP-2026-09-03-price-extraction](./FUTURE_PLAN.md#fp-2026-09-03-price-extraction-—-accurate-bookingcom-price-extraction) | Work Started | 🔵 In Progress | Mohammed Kamaluddin | Work started on implementation branch `price-extraction`. |
 
 ---
 

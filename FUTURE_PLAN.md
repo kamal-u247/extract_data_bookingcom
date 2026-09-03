@@ -24,7 +24,7 @@ Plan Added → Work Started → Daily Commitment / Progress → Implementation C
 
 | Plan ID | Title | Priority | Category | Status | Assignee / Developer | Target Finish | Branch / PR |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| [FP-2026-09-03-price-extraction](#fp-2026-09-03-price-extraction-—-accurate-bookingcom-price-extraction) | Accurate Booking.com price extraction | ⚡ High | Technical Task | 🟡 Planned | Unassigned | TBD | Not started |
+| [FP-2026-09-03-price-extraction](#fp-2026-09-03-price-extraction-—-accurate-bookingcom-price-extraction) | Accurate Booking.com price extraction | ⚡ High | Technical Task | 🔵 In Progress | Mohammed Kamaluddin | TBD | `price-extraction` |
 
 ---
 
@@ -37,11 +37,11 @@ Plan Added → Work Started → Daily Commitment / Progress → Implementation C
 | **Plan ID** | `FP-2026-09-03-price-extraction` |
 | **Category** | Technical Task / Feature |
 | **Priority** | ⚡ High |
-| **Status** | 🟡 Planned |
+| **Status** | 🔵 In Progress |
 | **Added Date** | 03 Sep 2026 |
 | **Target Completion** | TBD |
-| **Assignee / Developer** | Unassigned |
-| **Implementation Branch** | Not started |
+| **Assignee / Developer** | Mohammed Kamaluddin |
+| **Implementation Branch** | `price-extraction` |
 | **Dependencies / Prerequisites** | Node.js Playwright setup on `main` branch |
 
 #### Goal
@@ -63,6 +63,7 @@ Extract real, search-context-specific room prices from Booking.com instead of us
 
 #### Daily Commitments & Progress Log
 - **03 Sep 2026**: Plan created and registered in `FUTURE_PLAN.md` and `FUTURE_TIMELINE.md`.
+- **03 Sep 2026**: Assigned to Mohammed Kamaluddin on implementation branch `price-extraction`; work started.
 
 ---
 
