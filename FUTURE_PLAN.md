@@ -1,4 +1,4 @@
-# Future Plans & Task Registry
+# 🗺️ Future Plans & Task Registry
 
 This document is the central source of truth for planned features, upcoming improvements, technical tasks, and bug fixes for the project. It is maintained on the `future-plan` branch together with [FUTURE_TIMELINE.md](./FUTURE_TIMELINE.md).
 
@@ -6,28 +6,29 @@ Dates use the `DD-MM-YYYY` format.
 
 ---
 
-## Workflow & Lifecycle
+## 🔄 Planning Workflow
 
-Each plan follows this lifecycle:
+When adding a new plan in the future:
+1. **Define Plan**: Create a detailed plan entry below with a unique Plan ID (`FP-YYYY-MM-DD-short-title`), Goal, Scope, and Definition of Done.
+2. **Register**: Add a row to the **Plan Registry** table.
+3. **Log Timeline**: Append a `Plan Added` entry to [FUTURE_TIMELINE.md](./FUTURE_TIMELINE.md).
+4. **Implementation**: Code changes are developed on a separate branch off `main` (e.g. `feature/*` or `fix/*`). Never commit application code directly to `future-plan`.
 
 ```text
-Added → Planned → In progress → Implemented → Completed
+Plan Added → Work Started → Daily Commitment / Progress → Implementation Completed → Plan Completed
 ```
 
-- Implementation work MUST take place in separate code branches created from `main` (e.g. `feature/price-extraction` or `fix/rate-parsing`).
-- The `future-plan` branch is reserved strictly for documentation and project tracking.
-
 ---
 
-## Plan Registry
+## 📋 Plan Registry
 
-| Plan ID | Title | Priority | Category | Status | Assignee / Developer | Target Finish | Implementation Branch / PR |
+| Plan ID | Title | Priority | Category | Status | Assignee / Developer | Target Finish | Branch / PR |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| FP-2026-09-03-price-extraction | Accurate Booking.com price extraction | High | Technical Task | Planned | Unassigned | TBD | Not started |
+| [FP-2026-09-03-price-extraction](#fp-2026-09-03-price-extraction-—-accurate-bookingcom-price-extraction) | Accurate Booking.com price extraction | ⚡ High | Technical Task | 🟡 Planned | Unassigned | TBD | Not started |
 
 ---
 
-## Active & Planned Plans
+## 🎯 Active & Planned Specifications
 
 ### FP-2026-09-03-price-extraction — Accurate Booking.com price extraction
 
@@ -35,8 +36,8 @@ Added → Planned → In progress → Implemented → Completed
 | --- | --- |
 | **Plan ID** | `FP-2026-09-03-price-extraction` |
 | **Category** | Technical Task / Feature |
-| **Priority** | High |
-| **Status** | Planned |
+| **Priority** | ⚡ High |
+| **Status** | 🟡 Planned |
 | **Added Date** | 03-09-2026 |
 | **Target Completion** | TBD |
 | **Assignee / Developer** | Unassigned |
@@ -61,32 +62,20 @@ Extract real, search-context-specific room prices from Booking.com instead of us
 - No credentials, local captures, logs, or generated browser files are tracked.
 
 #### Daily Commitments & Progress Log
-- **03-09-2026**: Plan created and added to registry.
+- **03-09-2026**: Plan created and registered in `FUTURE_PLAN.md` and `FUTURE_TIMELINE.md`.
 
 ---
 
-## Task Categories & Backlog Structure
+## 📁 Task Categories & Backlog Structure
 
-### 1. Planned Features
+### 1. 🚀 Planned Features
 *(Feature requests and new functionality to be designed and implemented)*
 
-### 2. Upcoming Improvements
+### 2. ⚡ Upcoming Improvements
 *(Refactoring, performance enhancements, UI/UX polish)*
 
-### 3. Technical Tasks
+### 3. 🛠️ Technical Tasks
 *(Infrastructure, test coverage, parser stability, environment setup)*
 
-### 4. Bugs & Issues to Address Later
+### 4. 🐛 Bugs & Issues to Address Later
 *(Known limitations, edge cases, fallback bugs to resolve in future sprints)*
-
----
-
-## Guidelines for Adding a New Plan
-
-1. Create a unique Plan ID using `FP-YYYY-MM-DD-short-title`.
-2. Add an entry in the **Plan Registry** table with Priority, Status, Category, and Assignee.
-3. Create a detailed section under the appropriate category outlining Goal, Scope, Dependencies, and Definition of Done.
-4. Log a `Plan added` entry in [FUTURE_TIMELINE.md](./FUTURE_TIMELINE.md).
-5. When a developer starts work, update the Assignee and Status, and log a `Work started` event in `FUTURE_TIMELINE.md`.
-6. Log day-to-day developer commitments in `FUTURE_TIMELINE.md` and the plan's Progress Log.
-7. Upon PR/merge, update Status to `Completed` and log the completion in `FUTURE_TIMELINE.md`.
