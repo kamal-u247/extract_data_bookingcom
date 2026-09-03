@@ -24,7 +24,7 @@ Plan Added → Work Started → Daily Commitment / Progress → Implementation C
 
 | Plan ID | Title | Priority | Category | Status | Assignee / Developer | Target Finish | Branch / PR |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| [FP-2026-09-03-price-extraction](#fp-2026-09-03-price-extraction-—-accurate-bookingcom-price-extraction) | Accurate Booking.com price extraction | ⚡ High | Technical Task | 🔵 In Progress | Mohammed Kamaluddin | TBD | `price-extraction` |
+| [FP-2026-09-03-price-extraction](#fp-2026-09-03-price-extraction-—-accurate-bookingcom-price-extraction) | Accurate Booking.com price extraction | ⚡ High | Technical Task | 🟢 Completed | Mohammed Kamaluddin | 03 Sep 2026 | `main` (PR #2) |
 
 ---
 
@@ -37,11 +37,11 @@ Plan Added → Work Started → Daily Commitment / Progress → Implementation C
 | **Plan ID** | `FP-2026-09-03-price-extraction` |
 | **Category** | Technical Task / Feature |
 | **Priority** | ⚡ High |
-| **Status** | 🔵 In Progress |
+| **Status** | 🟢 Completed |
 | **Added Date** | 03 Sep 2026 |
-| **Target Completion** | TBD |
+| **Target Completion** | 03 Sep 2026 |
 | **Assignee / Developer** | Mohammed Kamaluddin |
-| **Implementation Branch** | `price-extraction` |
+| **Implementation Branch** | `feature/price-extraction` (Merged into `main` via PR #2) |
 | **Dependencies / Prerequisites** | Node.js Playwright setup on `main` branch |
 
 #### Goal

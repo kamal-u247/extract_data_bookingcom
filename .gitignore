@@ -1,7 +1,35 @@
 # Dependencies (if present locally)
 node_modules/
 
-# OS and Editor files
+# Build output and tool caches
+dist/
+.vite/
+.cache/
+coverage/
+
+# Environment files and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+credentials.json
+secrets.json
+
+# Logs, page dumps, and local debugging artifacts
+*.log
+logs/
+page_dump*.html
+inspect_scrolled.js
+playwright-report/
+test-results/
+pms_hotel_extracted_data.json
+
+# Editor and operating-system files
 .DS_Store
 Thumbs.db
 .vscode/

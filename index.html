@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="https://cf.bstatic.com/static/img/favicon/9ca83ba2a5a3293ff07452cb24949a5843af4592.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Booking.com Hotel Data Extractor</title>
+  </head>
+  <body class="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans antialiased selection:bg-blue-600 selection:text-white" x-data="extractorApp">
+    
+    <!-- Header / Branding Bar -->
+    <header class="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-40 shadow-xs">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-md shadow-blue-500/20">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+          </div>
+          <div>
+            <h1 class="font-bold text-lg leading-none tracking-tight text-slate-900">Booking Extractor</h1>
+            <p class="text-xs text-slate-500 mt-0.5 font-medium">Dynamic TypeScript Data Extraction Engine</p>
+          </div>
+        </div>
+
+        <template x-if="extractedData">
+          <button 
+            @click="downloadJson()"
+            class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm flex items-center gap-2 shadow-md shadow-emerald-600/20 transition-all active:scale-95 cursor-pointer"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+            Download JSON
+          </button>
+        </template>
+      </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-8">
+      
+      <!-- Hero & URL Search Box -->
+      <section class="glass-card rounded-2xl p-6 sm:p-8 shadow-xl relative overflow-hidden bg-white border border-slate-200">
+        <div class="absolute -right-20 -top-20 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-3xl">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 mb-3">
+            <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+            Dynamic URL & Price Extractor
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Extract Room Types, Live Rates, Photos & Facilities</h2>
+          <p class="text-slate-600 text-sm sm:text-base mt-2">Paste any Booking.com hotel URL and optional search parameters to parse accurate context-specific room prices and PMS room type data.</p>
+        </div>
+
+        <form @submit.prevent="extractData()" class="mt-6 flex flex-col gap-4">
+          <!-- Main URL Input -->
+          <div class="flex flex-col sm:flex-row gap-3">
+            <div class="relative flex-1">
+              <input 
+                type="url" 
+                x-model="url" 
+                placeholder="https://www.booking.com/hotel/..."
+                class="w-full glass-input rounded-xl px-4 py-3.5 pl-11 text-sm text-slate-900 placeholder-slate-400 focus:outline-none transition-all shadow-xs"
+                required
+              />
+              <svg class="w-5 h-5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+              </svg>
+            </div>
+
+            <div>
+              <button 
+                type="submit" 
+                :disabled="loading"
+                class="px-6 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm shadow-md shadow-blue-600/20 flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50 whitespace-nowrap min-w-[140px] cursor-pointer"
+              >
+                <template x-if="!loading">
+                  <span class="flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Extract Data
+                  </span>
+                </template>
+                <template x-if="loading">
+                  <span class="flex items-center gap-2">
+                    <svg class="animate-spin w-4 h-4 text-white" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Extracting...
+                  </span>
+                </template>
+              </button>
+            </div>
+          </div>
+
+          <!-- Search Context Optional Inputs -->
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-1 border-t border-slate-100">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-500 mb-1">Check-in Date</label>
+              <input 
+                type="date" 
+                x-model="checkin"
+                class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-500 mb-1">Check-out Date</label>
+              <input 
+                type="date" 
+                x-model="checkout"
+                class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-500 mb-1">Adults</label>
+              <input 
+                type="number" 
+                min="1" 
+                max="10" 
+                x-model="adults"
+                class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-500 mb-1">Children</label>
+              <input 
+                type="number" 
+                min="0" 
+                max="10" 
+                x-model="children"
+                class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500"
+              />
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-500 mb-1">Currency</label>
+              <select 
+                x-model="currency"
+                class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none focus:border-blue-500 bg-white"
+              >
+                <option value="AUD">AUD (AU$)</option>
+                <option value="USD">USD ($)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="GBP">GBP (£)</option>
+                <option value="CAD">CAD (CA$)</option>
+                <option value="NZD">NZD (NZ$)</option>
+              </select>
+            </div>
+          </div>
+        </form>
+
+        <!-- Error Notification -->
+        <template x-if="error">
+          <div class="mt-4 p-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-center gap-3 animate-fade-in">
+            <svg class="w-5 h-5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span x-text="error"></span>
+          </div>
+        </template>
+      </section>
+
+      <!-- Extracted Data Dashboard -->
+      <template x-if="extractedData">
+        <div class="space-y-6">
+
+          <!-- Data Extraction Source Transparency Banner -->
+          <div class="p-4 rounded-xl bg-blue-50/70 border border-blue-200/80 text-slate-800 text-xs space-y-2">
+            <div class="flex items-center gap-2 font-semibold text-blue-900">
+              <svg class="w-4 h-4 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span>Data Extraction Transparency & Source Breakdown</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1 text-[11px] leading-relaxed">
+              <div class="bg-white p-2.5 rounded-lg border border-slate-200">
+                <span class="font-bold text-emerald-700 block mb-1">⚡ Extracted Live from Booking.com:</span>
+                Room Type Name, Description, Max Sleep Occupancy, Bed Configuration, Address, Ratings & Review Count, Facilities List, High-Res Photos, Search-Context Nightly Rates (`roomtype_rack_rate`).
+              </div>
+              <div class="bg-white p-2.5 rounded-lg border border-slate-200">
+                <span class="font-bold text-amber-700 block mb-1">⚙️ RMS Default Values & Null Policy:</span>
+                Rack Rate: Live rate per night, or `null` when unavailable (no 200 fallback). Room Count (default 1), Bedrooms (default 1), Min Stay (calculated nights), Category ("Standard").
+              </div>
+            </div>
+          </div>
+          
+          <!-- Summary Quick Badges -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div class="glass-card rounded-xl p-4 flex items-center gap-3 bg-white border border-slate-200">
+              <div class="w-10 h-10 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center font-bold text-base border border-amber-200">
+                <span x-text="extractedData.rating.score || 'N/A'"></span>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500 font-medium">Rating Score</p>
+                <p class="text-sm font-semibold text-slate-800" x-text="extractedData.rating.reviewCount ? `${extractedData.rating.reviewCount} Reviews` : 'No reviews'"></p>
+              </div>
+            </div>
+
+            <div class="glass-card rounded-xl p-4 flex items-center gap-3 bg-white border border-slate-200">
+              <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-bold text-base border border-blue-200">
+                <span x-text="extractedData.photos.length"></span>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500 font-medium">High-Res Photos</p>
+                <p class="text-sm font-semibold text-slate-800">Extracted</p>
+              </div>
+            </div>
+
+            <div class="glass-card rounded-xl p-4 flex items-center gap-3 bg-white border border-slate-200">
+              <div class="w-10 h-10 rounded-lg bg-purple-50 text-purple-700 flex items-center justify-center font-bold text-base border border-purple-200">
+                <span x-text="extractedData.roomTypes.length"></span>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500 font-medium">Room Types</p>
+                <p class="text-sm font-semibold text-slate-800">Identified</p>
+              </div>
+            </div>
+
+            <div class="glass-card rounded-xl p-4 flex items-center gap-3 bg-white border border-slate-200">
+              <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-base border border-emerald-200">
+                <span x-text="getTotalFacilityCount()"></span>
+              </div>
+              <div>
+                <p class="text-xs text-slate-500 font-medium">Facilities</p>
+                <p class="text-sm font-semibold text-slate-800">Extracted</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Bar -->
+          <div class="border-b border-slate-200 flex items-center justify-between gap-4 overflow-x-auto">
+            <div class="flex gap-2 min-w-max pb-2">
+              <button 
+                @click="activeTab = 'overview'" 
+                :class="activeTab === 'overview' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'"
+                class="px-4 py-2 rounded-lg font-medium text-sm transition-all cursor-pointer"
+              >
+                Overview
+              </button>
+
+              <button 
+                @click="activeTab = 'roomTypes'" 
+                :class="activeTab === 'roomTypes' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'"
+                class="px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                Room Types
+                <span class="px-1.5 py-0.5 rounded-full text-xs font-semibold" :class="activeTab === 'roomTypes' ? 'bg-blue-700 text-white' : 'bg-slate-200 text-slate-700'" x-text="extractedData.roomTypes.length"></span>
+              </button>
+
+              <button 
+                @click="activeTab = 'photos'" 
+                :class="activeTab === 'photos' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'"
+                class="px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                Photos Gallery
+                <span class="px-1.5 py-0.5 rounded-full text-xs font-semibold" :class="activeTab === 'photos' ? 'bg-blue-700 text-white' : 'bg-slate-200 text-slate-700'" x-text="extractedData.photos.length"></span>
+              </button>
+
+              <button 
+                @click="activeTab = 'facilities'" 
+                :class="activeTab === 'facilities' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'"
+                class="px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                Facilities
+                <span class="px-1.5 py-0.5 rounded-full text-xs font-semibold" :class="activeTab === 'facilities' ? 'bg-blue-700 text-white' : 'bg-slate-200 text-slate-700'" x-text="getTotalFacilityCount()"></span>
+              </button>
+
+              <button 
+                @click="activeTab = 'json'" 
+                :class="activeTab === 'json' ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'"
+                class="px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                Raw JSON
+              </button>
+            </div>
+
+            <button 
+              @click="downloadJson()"
+              class="px-3.5 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-300 flex items-center gap-1.5 shrink-0 shadow-xs cursor-pointer"
+            >
+              <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+              </svg>
+              Save JSON
+            </button>
+          </div>
+
+          <!-- TAB CONTENT PANELS -->
+
+          <!-- 1. OVERVIEW TAB -->
+          <div x-show="activeTab === 'overview'" class="space-y-6">
+            <div class="glass-card rounded-2xl p-6 space-y-4 bg-white border border-slate-200">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+                <div>
+                  <h3 class="text-2xl font-bold text-slate-900" x-text="extractedData.hotelName"></h3>
+                  <p class="text-sm text-slate-600 mt-1 flex items-center gap-1.5 font-medium" x-show="extractedData.address.streetAddress">
+                    <svg class="w-4 h-4 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span x-text="[extractedData.address.streetAddress, extractedData.address.locality, extractedData.address.region, extractedData.address.country].filter(Boolean).join(', ')"></span>
+                  </p>
+                </div>
+
+                <template x-if="extractedData.rating.score">
+                  <div class="flex items-center gap-3 bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-200 shrink-0">
+                    <div class="w-10 h-10 rounded-lg bg-blue-600 text-white font-bold text-lg flex items-center justify-center shadow-xs">
+                      <span x-text="extractedData.rating.score"></span>
+                    </div>
+                    <div>
+                      <p class="text-xs font-semibold text-slate-700">Guest Rating</p>
+                      <p class="text-xs text-slate-500" x-text="`${extractedData.rating.reviewCount || 0} reviews`"></p>
+                    </div>
+                  </div>
+                </template>
+              </div>
+
+              <div>
+                <h4 class="text-xs uppercase tracking-wider text-slate-500 font-bold mb-2">Description</h4>
+                <p class="text-sm text-slate-700 leading-relaxed" x-text="extractedData.description || 'No description extracted.'"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. ROOM TYPES TAB -->
+          <div x-show="activeTab === 'roomTypes'" class="space-y-4">
+            <template x-if="extractedData.roomTypes.length === 0">
+              <div class="glass-card rounded-xl p-8 text-center text-slate-500 bg-white border border-slate-200">
+                No distinct room types extracted for this property.
+              </div>
+            </template>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <template x-for="(room, idx) in extractedData.roomTypes" :key="idx">
+                <div class="glass-card rounded-xl p-5 flex flex-col justify-between space-y-4 bg-white border border-slate-200 hover:border-blue-400 transition-all hover:shadow-md">
+                  <div>
+                    <div class="flex items-start justify-between gap-2">
+                      <h4 class="font-semibold text-slate-900 text-base" x-text="room.name"></h4>
+                      <span class="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-blue-50 text-blue-700 border border-blue-200">Room</span>
+                    </div>
+
+                    <template x-if="room.bedConfiguration">
+                      <p class="text-xs text-slate-600 mt-2 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        <span x-text="room.bedConfiguration"></span>
+                      </p>
+                    </template>
+
+                    <!-- Price Badge Display -->
+                    <div class="mt-3">
+                      <template x-if="room.price !== null && room.price !== undefined">
+                        <div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold">
+                          <span>Rate:</span>
+                          <span x-text="formatPrice(room.price, room.currency) + ' / night'"></span>
+                        </div>
+                      </template>
+                      <template x-if="room.price === null || room.price === undefined">
+                        <div class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 border border-slate-300 text-xs font-semibold">
+                          <span>Rate Unavailable</span>
+                        </div>
+                      </template>
+                    </div>
+
+                    <template x-if="room.photos && room.photos.length > 0">
+                      <div class="mt-2 text-[11px] text-blue-700 font-semibold flex items-center gap-1 bg-blue-50/80 px-2 py-1 rounded-md border border-blue-100 w-fit">
+                        <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        <span x-text="`${room.photos.length} Room-Specific Photos`"></span>
+                      </div>
+                    </template>
+                  </div>
+
+                  <template x-if="room.maxOccupancy">
+                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                      <span>Occupancy:</span>
+                      <span class="font-semibold text-slate-800" x-text="room.maxOccupancy"></span>
+                    </div>
+                  </template>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <!-- 3. PHOTOS GALLERY TAB -->
+          <div x-show="activeTab === 'photos'" class="space-y-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+              <template x-for="(photo, idx) in extractedData.photos" :key="idx">
+                <div class="glass-card rounded-xl overflow-hidden group relative aspect-4/3 cursor-pointer bg-white border border-slate-200 shadow-xs" @click="openLightbox(photo.url)">
+                  <img :src="photo.url" :alt="photo.caption || 'Hotel photo'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+                  <div class="absolute inset-0 bg-gradient-to-t from-slate-900/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-2 flex flex-col justify-end">
+                    <p class="text-[11px] text-white font-medium line-clamp-1" x-text="photo.caption || 'Photo'"></p>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <!-- 4. FACILITIES TAB -->
+          <div x-show="activeTab === 'facilities'" class="space-y-6">
+            <template x-if="Object.keys(extractedData.facilities).length === 0">
+              <div class="glass-card rounded-xl p-8 text-center text-slate-500 bg-white border border-slate-200">
+                No categorized facilities extracted.
+              </div>
+            </template>
+
+            <div class="flex items-center justify-between bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
+              <div>
+                <h3 class="text-base font-bold text-slate-900">Extracted Facilities & Amenities</h3>
+                <p class="text-xs text-slate-500">Comprehensive list of extracted property amenities organized by category</p>
+              </div>
+              <span class="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 font-bold text-sm border border-emerald-200 flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span x-text="`${getTotalFacilityCount()} Facilities Extracted`"></span>
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <template x-for="(items, category) in extractedData.facilities" :key="category">
+                <div class="glass-card rounded-xl p-5 space-y-3 bg-white border border-slate-200 hover:border-blue-300 transition-all shadow-xs flex flex-col justify-between">
+                  <div>
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-2.5 mb-3">
+                      <h4 class="font-bold text-sm text-blue-700 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-blue-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span x-text="category"></span>
+                      </h4>
+                      <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600 border border-slate-200" x-text="`${items.length} items`"></span>
+                    </div>
+
+                    <ul class="grid grid-cols-1 gap-2">
+                      <template x-for="(item, idx) in items" :key="idx">
+                        <li class="text-xs text-slate-700 flex items-center gap-2 font-medium bg-slate-50/70 p-2 rounded-lg border border-slate-100">
+                          <span class="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></span>
+                          <span x-text="item"></span>
+                        </li>
+                      </template>
+                    </ul>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <!-- 5. RAW JSON TAB -->
+          <div x-show="activeTab === 'json'" class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-slate-500 font-mono font-medium">pms_roomtype Table JSON Array Output</span>
+              <button 
+                @click="copyJson()" 
+                class="px-3 py-1 rounded bg-white hover:bg-slate-100 text-xs font-semibold text-slate-700 border border-slate-300 flex items-center gap-1.5 shadow-xs cursor-pointer"
+              >
+                <svg class="w-3.5 h-3.5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                </svg>
+                Copy JSON
+              </button>
+            </div>
+
+            <pre class="rounded-xl p-4 text-xs font-mono text-emerald-400 bg-slate-900 overflow-x-auto max-h-[600px] border border-slate-800 shadow-inner" x-text="rawJson"></pre>
+          </div>
+
+        </div>
+      </template>
+
+    </main>
+
+    <!-- Lightbox Modal -->
+    <template x-if="selectedPhotoUrl">
+      <div class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4" @click.self="closeLightbox()">
+        <div class="relative max-w-5xl w-full max-h-[90vh] flex flex-col items-center">
+          <button @click="closeLightbox()" class="absolute -top-10 right-0 text-slate-300 hover:text-white p-2 cursor-pointer">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+          <img :src="selectedPhotoUrl" class="max-w-full max-h-[85vh] rounded-xl object-contain shadow-2xl" />
+        </div>
+      </div>
+    </template>
+
+    <!-- Toast Notification -->
+    <template x-if="toastMessage">
+      <div class="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl bg-blue-600 text-white font-medium text-sm shadow-xl flex items-center gap-2 animate-bounce">
+        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        <span x-text="toastMessage"></span>
+      </div>
+    </template>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
