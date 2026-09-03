@@ -22,7 +22,7 @@
 This branch contains the following project management documents:
 
 1. [**FUTURE_PLAN.md**](./FUTURE_PLAN.md) — Central registry and backlog for planned features, upcoming improvements, technical tasks, bugs/issues to address later, priorities, status, developer assignments, and definitions of done.
-2. [**FUTURE_TIMELINE.md**](./FUTURE_TIMELINE.md) — Visual Mermaid timeline diagram and chronological append-only log tracking plan additions, developer assignments, day-to-day commitments, implementation completion, and merge history.
+2. [**FUTURE_TIMELINE.md**](./FUTURE_TIMELINE.md) — Visual Mermaid timeline diagram and chronological append-only log tracking plan additions, developer assignments, day-to-day commitments, implementation completion, and merge history using `D MMM YYYY` dates (e.g. `03 Sep 2026`).
 
 ---
 

@@ -2,7 +2,7 @@
 
 An append-only history of planning, developer assignments, progress updates, and completion events for the `future-plan` branch.
 
-Dates use the `DD-MM-YYYY` format. Every entry links to a Plan ID in [FUTURE_PLAN.md](./FUTURE_PLAN.md).
+Dates use the `D MMM YYYY` format (e.g. `03 Sep 2026`). Every entry links to a Plan ID in [FUTURE_PLAN.md](./FUTURE_PLAN.md).
 
 ---
 
@@ -11,9 +11,9 @@ Dates use the `DD-MM-YYYY` format. Every entry links to a Plan ID in [FUTURE_PLA
 ```mermaid
 timeline
     title Booking.com Price Extractor — Project Timeline
-    03-09-2026 : Plan Added
-               : FP-2026-09-03-price-extraction
-               : Accurate Booking.com price extraction
+    03 Sep 2026 : Plan Added
+                 : FP-2026-09-03-price-extraction
+                 : Accurate Booking.com price extraction
 ```
 
 ---
@@ -22,7 +22,7 @@ timeline
 
 | Date | Plan ID | Event | Status | Assignee / Developer | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 03-09-2026 | [FP-2026-09-03-price-extraction](./FUTURE_PLAN.md#fp-2026-09-03-price-extraction-—-accurate-bookingcom-price-extraction) | Plan Added | 🟡 Planned | Unassigned | Defined scope for search-context-specific Booking.com price extraction. |
+| 03 Sep 2026 | [FP-2026-09-03-price-extraction](./FUTURE_PLAN.md#fp-2026-09-03-price-extraction-—-accurate-bookingcom-price-extraction) | Plan Added | 🟡 Planned | Unassigned | Defined scope for search-context-specific Booking.com price extraction. |
 
 ---
 

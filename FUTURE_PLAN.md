@@ -2,7 +2,7 @@
 
 This document is the central source of truth for planned features, upcoming improvements, technical tasks, and bug fixes for the project. It is maintained on the `future-plan` branch together with [FUTURE_TIMELINE.md](./FUTURE_TIMELINE.md).
 
-Dates use the `DD-MM-YYYY` format.
+Dates use the `D MMM YYYY` format (e.g. `03 Sep 2026`).
 
 ---
 
@@ -38,7 +38,7 @@ Plan Added → Work Started → Daily Commitment / Progress → Implementation C
 | **Category** | Technical Task / Feature |
 | **Priority** | ⚡ High |
 | **Status** | 🟡 Planned |
-| **Added Date** | 03-09-2026 |
+| **Added Date** | 03 Sep 2026 |
 | **Target Completion** | TBD |
 | **Assignee / Developer** | Unassigned |
 | **Implementation Branch** | Not started |
@@ -62,7 +62,7 @@ Extract real, search-context-specific room prices from Booking.com instead of us
 - No credentials, local captures, logs, or generated browser files are tracked.
 
 #### Daily Commitments & Progress Log
-- **03-09-2026**: Plan created and registered in `FUTURE_PLAN.md` and `FUTURE_TIMELINE.md`.
+- **03 Sep 2026**: Plan created and registered in `FUTURE_PLAN.md` and `FUTURE_TIMELINE.md`.
 
 ---
 
