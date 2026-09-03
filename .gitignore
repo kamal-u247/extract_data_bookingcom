@@ -1,4 +1,4 @@
-# Dependencies
+# Dependencies (if present locally)
 node_modules/
 
 # Build output and tool caches
@@ -29,12 +29,13 @@ playwright-report/
 test-results/
 pms_hotel_extracted_data.json
 
-# Local planning & timeline documents
-FUTURE_PLAN.md
-FUTURE_TIMELINE.md
-
 # Editor and operating-system files
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
+
+# Logs and scratch artifacts
+*.log
+logs/
+scratch/
