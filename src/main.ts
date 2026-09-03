@@ -4,6 +4,11 @@ import { ExtractedHotelData, PMSRoomTypeRecord } from './utils/bookingExtractor'
 
 interface ExtractorAppStore {
   url: string;
+  checkin: string;
+  checkout: string;
+  adults: number;
+  children: number;
+  currency: string;
   loading: boolean;
   error: string | null;
   activeTab: 'overview' | 'roomTypes' | 'photos' | 'facilities' | 'json';
@@ -21,11 +26,17 @@ interface ExtractorAppStore {
   openLightbox: (url: string) => void;
   closeLightbox: () => void;
   getTotalFacilityCount: () => number;
+  formatPrice: (price: number | null | undefined, currency: string | null | undefined) => string;
 }
 
 // Register Alpine Component
 Alpine.data('extractorApp', (): ExtractorAppStore => ({
   url: '',
+  checkin: '',
+  checkout: '',
+  adults: 2,
+  children: 0,
+  currency: 'AUD',
   loading: false,
   error: null,
   activeTab: 'overview',
@@ -45,12 +56,24 @@ Alpine.data('extractorApp', (): ExtractorAppStore => ({
     this.error = null;
 
     try {
+      const searchContext: Record<string, any> = {};
+      if (this.checkin) searchContext.checkin = this.checkin;
+      if (this.checkout) searchContext.checkout = this.checkout;
+      if (this.adults) searchContext.adults = Number(this.adults);
+      if (this.children !== undefined && this.children !== null && this.children !== 0) searchContext.children = Number(this.children);
+      if (this.currency) searchContext.currency = this.currency;
+
+      const payload: Record<string, any> = { url: this.url.trim() };
+      if (Object.keys(searchContext).length > 0) {
+        payload.searchContext = searchContext;
+      }
+
       const response = await fetch('api/extract', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ url: this.url.trim() }),
+        body: JSON.stringify(payload),
       });
 
       const resData = await response.json();
@@ -86,6 +109,7 @@ Alpine.data('extractorApp', (): ExtractorAppStore => ({
             maxOccupancy: `${r.roomtype_max_sleeps} guests`,
             bedConfiguration: r.roomtype_inclusion,
             price: r.roomtype_rack_rate,
+            currency: r.roomtype_currency || null,
             photos: r.roomtype_photos,
           })),
           photos: (first.roomtype_photos || []).map((url) => ({ url, caption: first.roomtype_name })),
@@ -102,6 +126,12 @@ Alpine.data('extractorApp', (): ExtractorAppStore => ({
     } finally {
       this.loading = false;
     }
+  },
+
+  formatPrice(price: number | null | undefined, currency: string | null | undefined): string {
+    if (price === null || price === undefined) return 'Rate Unavailable';
+    const currStr = currency ? `${currency.toUpperCase()} ` : '$';
+    return `${currStr}${price.toFixed(2)}`;
   },
 
   getTotalFacilityCount(): number {
