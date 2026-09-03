@@ -20,15 +20,18 @@ coverage/
 credentials.json
 secrets.json
 
-# Logs and local debugging artifacts
+# Logs, page dumps, and local debugging artifacts
 *.log
 logs/
 page_dump*.html
+inspect_scrolled.js
 playwright-report/
 test-results/
+pms_hotel_extracted_data.json
 
-# Local planning documents
+# Local planning & timeline documents
 FUTURE_PLAN.md
+FUTURE_TIMELINE.md
 
 # Editor and operating-system files
 .DS_Store

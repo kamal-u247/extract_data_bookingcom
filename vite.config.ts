@@ -22,6 +22,7 @@ function apiExtractorPlugin(): Plugin {
           try {
             const parsed = JSON.parse(body || '{}');
             const targetUrl = parsed.url;
+            const searchContext = parsed.searchContext;
 
             if (!targetUrl || typeof targetUrl !== 'string') {
               res.statusCode = 400;
@@ -30,8 +31,8 @@ function apiExtractorPlugin(): Plugin {
               return;
             }
 
-            console.log(`[API /api/extract] Extracting URL: ${targetUrl}`);
-            const data = await extractPMSRoomTypesFromUrl(targetUrl);
+            console.log(`[API /api/extract] Extracting URL: ${targetUrl}`, searchContext ? `Context: ${JSON.stringify(searchContext)}` : '');
+            const data = await extractPMSRoomTypesFromUrl(targetUrl, searchContext);
 
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
